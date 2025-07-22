@@ -1,0 +1,56 @@
+<div class="portada-container">
+  <video autoplay muted loop playsinline class="background-video">
+    <source src="/assets/backgroun/videoplayback.mp4" type="video/mp4" />
+    Tu navegador no soporta video.
+  </video>
+
+  <div class="overlay">
+    <div class="content">
+      <img [src]="myPortfolio.imageUrl" alt="Mi Foto" class="profile-pic" />
+
+      <h1 class="nombre">{{myPortfolio.name}}</h1>
+      <p class="rol">{{myPortfolio.role}}</p>
+
+      <div class="social-links">
+        @if (myPortfolio.urlsProfile.github !== '') {
+        <a [href]="myPortfolio.urlsProfile.github" target="_blank" class="github-link">
+          <i class="bi bi-github"></i>
+        </a>
+        }
+        @if (myPortfolio.urlsProfile.stackoverflow !== '') {
+        <a [href]="myPortfolio.urlsProfile.stackoverflow" target="_blank" class="stackoverflow-link">
+          <i class="bi bi-stack-overflow"></i>
+        </a>
+        }
+        @if (myPortfolio.urlsProfile.linkedin !== '') {
+        <a [href]="myPortfolio.urlsProfile.linkedin" target="_blank" class="linkedin-link">
+          <i class="bi bi-linkedin"></i>
+        </a>
+        }
+        @if (myPortfolio.urlsProfile.twitter !== '') {
+          
+        }
+        @if (myPortfolio.urlsProfile.instagram !== '') {
+        <a [href]="myPortfolio.urlsProfile.instagram" target="_blank" class="instagram-link">
+          <i class="bi bi-instagram"></i>
+        </a>
+        }
+        @if (myPortfolio.urlsProfile.youtube !== '') {
+          
+        }
+        @if (myPortfolio.urlsProfile.facebook !== '') {
+          
+        }
+        @if (myPortfolio.urlsProfile.whatsapp !== '') {
+          
+        }
+        @if (myPortfolio.urlsProfile.telegram !== '') {
+          
+        }
+        @if (myPortfolio.urlsProfile.email !== '') {
+          
+        }
+      </div>
+    </div>
+  </div>
+</div>

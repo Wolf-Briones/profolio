@@ -1,0 +1,125 @@
+.portada-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  .background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  .overlay {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); // Capa semitransparente
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .content {
+      text-align: center;
+      color: #fff;
+
+      .profile-pic {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        margin-bottom: 1rem;
+      }
+
+      .nombre {
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+
+      .rol {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: #e0e0e0;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+
+        a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background-color: rgba(255, 255, 255, 0.1);
+          transition: all 0.3s ease;
+          text-decoration: none;
+
+          i {
+            font-size: 1.5rem;
+            color: white;
+            transition: transform 0.3s ease;
+          }
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+          }
+        }
+
+        // Estilos específicos por red social
+        .github-link:hover {
+          background-color: #333;
+          i {
+            color: white;
+          }
+        }
+
+        .stackoverflow-link:hover {
+          background-color: #f48024;
+          i {
+            color: white;
+          }
+        }
+
+        .linkedin-link:hover {
+          background-color: #0a66c2;
+          i {
+            color: white;
+          }
+        }
+
+        .twitter-link:hover {
+          background-color: #1da1f2;
+          i {
+            color: white;
+          }
+        }
+
+        .instagram-link:hover {
+          background: radial-gradient(
+            circle at 30% 107%,
+            #fdf497 0%,
+            #fdf497 5%,
+            #fd5949 45%,
+            #d6249f 60%,
+            #285aeb 90%
+          );
+          i {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}

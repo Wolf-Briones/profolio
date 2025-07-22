@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "dist/franki-briones",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

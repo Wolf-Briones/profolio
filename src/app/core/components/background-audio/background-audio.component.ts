@@ -1,8 +1,19 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, signal, effect, ElementRef, ViewChild, OnDestroy, EffectRef, Inject, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  signal,
+  effect,
+  ElementRef,
+  ViewChild,
+  OnDestroy,
+  EffectRef,
+  Inject,
+  PLATFORM_ID
+} from '@angular/core';
 
 @Component({
   selector: 'app-background-audio',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './background-audio.component.html',
   styleUrl: './background-audio.component.scss'
@@ -10,44 +21,31 @@ import { Component, signal, effect, ElementRef, ViewChild, OnDestroy, EffectRef,
 export class BackgroundAudioComponent implements OnDestroy {
   @ViewChild('audioPlayer', { static: true }) audioPlayer!: ElementRef<HTMLAudioElement>;
 
-  // Signals para el estado del componente
-  isPlaying = signal(true);
+  isPlaying = signal(false); // Ahora inicia en falso, no reproduce automáticamente
   isLoading = signal(false);
   hasError = signal(false);
   volume = signal(0.5);
-  audioSrc = signal('/assets/audio/Spandex-Man The Animated Series - Rod Kim.mp3'); // Cambia por tu ruta de audio
+  audioSrc = signal('/assets/audio/Spandex-Man The Animated Series - Rod Kim.mp3');
   errorMessage = signal('');
   showVolumeControl = signal(true);
 
-  // Referencias a los effects para limpiarlos
   private effectRefs: EffectRef[] = [];
-
-  // Referencia matemática para el template
-  Math = Math;
-
-  // Verificar si estamos en el navegador
   private isBrowser: boolean;
+  Math = Math;
 
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
 
-    // Solo crear effects si estamos en el navegador
     if (this.isBrowser) {
-      // Effect para controlar la reproducción
+      // Solo pausar automáticamente si el estado cambia a "no reproduciendo"
       this.effectRefs.push(
         effect(() => {
-          if (this.audioPlayer?.nativeElement) {
-            const audio = this.audioPlayer.nativeElement;
-            if (this.isPlaying()) {
-              this.playAudio();
-            } else {
-              this.pauseAudio();
-            }
+          if (this.audioPlayer?.nativeElement && !this.isPlaying()) {
+            this.pauseAudio();
           }
         })
       );
 
-      // Effect para controlar el volumen
       this.effectRefs.push(
         effect(() => {
           if (this.audioPlayer?.nativeElement) {
@@ -56,20 +54,19 @@ export class BackgroundAudioComponent implements OnDestroy {
         })
       );
 
-      // Effect para manejar cambios en la fuente de audio
       this.effectRefs.push(
         effect(() => {
           if (this.audioPlayer?.nativeElement) {
             const audio = this.audioPlayer.nativeElement;
             const wasPlaying = this.isPlaying();
-            
+
             this.pauseAudio();
             this.hasError.set(false);
             this.isLoading.set(true);
-            
+
             audio.src = this.audioSrc();
             audio.load();
-            
+
             if (wasPlaying) {
               audio.addEventListener('canplay', () => {
                 this.playAudio();
@@ -82,10 +79,7 @@ export class BackgroundAudioComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    // Limpiar effects
     this.effectRefs.forEach(effectRef => effectRef.destroy());
-    
-    // Pausar audio al destruir el componente (solo en navegador)
     if (this.isBrowser && this.audioPlayer?.nativeElement) {
       this.audioPlayer.nativeElement.pause();
     }
@@ -93,8 +87,15 @@ export class BackgroundAudioComponent implements OnDestroy {
 
   toggleAudio() {
     if (this.hasError() || this.isLoading() || !this.isBrowser) return;
-    
-    this.isPlaying.update(playing => !playing);
+
+    const shouldPlay = !this.isPlaying();
+    this.isPlaying.set(shouldPlay);
+
+    if (shouldPlay) {
+      this.playAudio(); // Solo se llama después de la interacción del usuario
+    } else {
+      this.pauseAudio();
+    }
   }
 
   private async playAudio() {
@@ -116,14 +117,12 @@ export class BackgroundAudioComponent implements OnDestroy {
 
   private pauseAudio() {
     if (!this.isBrowser || !this.audioPlayer?.nativeElement) return;
-    
     this.audioPlayer.nativeElement.pause();
     this.isLoading.set(false);
   }
 
   onCanPlay() {
     if (!this.isBrowser) return;
-    
     this.isLoading.set(false);
     this.hasError.set(false);
     this.errorMessage.set('');
@@ -131,7 +130,6 @@ export class BackgroundAudioComponent implements OnDestroy {
 
   onError(event: any) {
     if (!this.isBrowser) return;
-    
     console.error('Error en el audio:', event);
     this.handleAudioError('No se pudo cargar el archivo de audio');
   }
@@ -140,7 +138,7 @@ export class BackgroundAudioComponent implements OnDestroy {
     this.hasError.set(true);
     this.isPlaying.set(false);
     this.isLoading.set(false);
-    
+
     if (typeof error === 'string') {
       this.errorMessage.set(error);
     } else if (error?.message) {
@@ -152,13 +150,13 @@ export class BackgroundAudioComponent implements OnDestroy {
 
   setVolume(event: Event) {
     if (!this.isBrowser) return;
-    
+
     const target = event.target as HTMLInputElement;
     const newVolume = parseFloat(target.value);
     this.volume.set(newVolume);
   }
 
-  // Métodos para la UI
+  // Métodos para UI
   getIcon(): string {
     if (this.isLoading()) {
       return 'bi-hourglass-split';
@@ -195,7 +193,7 @@ export class BackgroundAudioComponent implements OnDestroy {
     }
   }
 
-  // Métodos públicos para controlar desde el componente padre
+  // Métodos públicos
   setAudioSource(src: string) {
     this.audioSrc.set(src);
   }
@@ -209,7 +207,7 @@ export class BackgroundAudioComponent implements OnDestroy {
     this.showVolumeControl.update(show => !show);
   }
 
-  // Getters para acceder a los signals desde el padre
+  // Getters públicos
   get isAudioPlaying() {
     return this.isPlaying();
   }

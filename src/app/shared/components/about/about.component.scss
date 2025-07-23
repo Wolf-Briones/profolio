@@ -75,11 +75,12 @@ $large: 1280px;
     margin-top: 60px;
     margin-bottom: 60px;
     width: 100%;
-    max-width: 1400px;
+    max-width: 90vw;
     color: $text-primary;
     
     .row {  
       margin-top: 2rem; 
+      padding: 3rem;
     }
   }
 }
@@ -91,13 +92,13 @@ $large: 1280px;
 
   .diamonds-container {
     @include flex-center;
-    padding: 2rem 0;
-    margin-top: 2rem;
+    padding: 1rem 0;
+    margin-top: 6rem;
   }
 
   .diamonds-grid {
     position: relative;
-    @include responsive-size(28rem, 32rem); // Diamantes más grandes
+    @include responsive-size(28rem, 36rem); // Diamantes más grandes
   }
 }
 
@@ -286,7 +287,7 @@ $large: 1280px;
   font-family: 'Fira Code', 'Courier New', monospace; 
   color: $text-secondary;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  min-width: 500px;
+  min-width: 60dvw;
 
   .section-subtitle {
     font-size: 1.5rem;
@@ -302,7 +303,7 @@ $large: 1280px;
     gap: 8px;
 
     .line {
-      padding-left: 20px;
+      padding-left: 5dvw;
       text-align: left;
       white-space: pre-wrap;
     }

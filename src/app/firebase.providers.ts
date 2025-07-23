@@ -1,14 +1,13 @@
-import { EnvironmentProviders, importProvidersFrom } from '@angular/core';
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideStorage, getStorage } from '@angular/fire/storage';
-import { environment } from '../environments/environment.prod';
- 
 
-export const firebaseProviders: EnvironmentProviders = importProvidersFrom([
-  provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-  provideFirestore(() => getFirestore()),
-  provideAuth(() => getAuth()),
-  provideStorage(() => getStorage()),
-]);
+import { EnvironmentProviders, importProvidersFrom } from '@angular/core'; 
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';  
+import { environment } from '../environments/environment';
+
+export const firebaseProviders: EnvironmentProviders = importProvidersFrom( 
+  AngularFireModule.initializeApp(environment.firebaseConfig),
+  AngularFireAuthModule,
+  AngularFirestoreModule, 
+);
+ 

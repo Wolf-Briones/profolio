@@ -4,7 +4,7 @@
   <div class="overlay">
     <div class="content">
       <div class="row">
-        <div class="col col-md-6 col-sm-12">
+        <div class="col col-lg-6 col-md-12 col-sm-12">
           <!-- Primera Parte: Rombos -->
           <div class="diamonds-section">
             <h2 class="section-subtitle">Mis Fortalezas</h2>
@@ -56,46 +56,8 @@
               </div>
             </div>
           </div>
-
-          <div class="container">
-            <div class="basic-information">
-              <h2 class="section-subtitle">Basic Information</h2>
-              <div class="code-style">
-                <div class="line">
-                  <span class="symbol">*</span> -
-                  <span class="label">Date of Birth:</span>
-                  <span class="value">{{aboutMe.personalInfo.dateOfBirth}}</span>
-                </div>
-                <div class="line">
-                  <span class="symbol">*</span> -
-                  <span class="label">Email:</span>
-                  <span class="value">{{aboutMe.personalInfo.email}}</span>
-                </div>
-                <div class="line">
-                  <span class="symbol">*</span> -
-                  <span class="label">Phone:</span>
-                  <span class="value">{{aboutMe.personalInfo.phone}}</span>
-                </div>
-                <div class="line">
-                  <span class="symbol">*</span> -
-                  <span class="label">Address:</span>
-                  <span class="value">{{aboutMe.personalInfo.location}}</span>
-                </div>
-                <div class="line">
-                  <span class="symbol">*</span> -
-                  <span class="label">Language:</span>
-                  <span class="value">{{aboutMe.personalInfo.languages}}</span>
-                </div>
-                <div class="line">
-                  <span class="symbol">*</span> -
-                  <span class="label">Passport:</span>
-                  <span class="value">{{aboutMe.personalInfo.pasaport}}</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-        <div class="col col-md-6 col-sm-12">
+        <div class="col col-lg-6 col-md-12 col-sm-12">
           <!-- Segunda Parte: Tarjetas -->
           <div class="cards-section">
             <h2 class="section-subtitle">Detalles</h2>
@@ -113,6 +75,48 @@
                     <p class="card-description">{{ feature.description }}</p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="container">
+          <div class="basic-information">
+            <h2 class="section-subtitle">Basic Information</h2>
+            <div class="code-style">
+              <div class="line">
+                <span class="symbol">*</span> -
+                <span class="label">Date of Birth:</span>
+                <span class="value">{{
+                  aboutMe.personalInfo.dateOfBirth
+                }}</span>
+              </div>
+              <div class="line">
+                <span class="symbol">*</span> -
+                <span class="label">Email:</span>
+                <span class="value">{{ aboutMe.personalInfo.email }}</span>
+              </div>
+              <div class="line">
+                <span class="symbol">*</span> -
+                <span class="label">Phone:</span>
+                <span class="value">{{ aboutMe.personalInfo.phone }}</span>
+              </div>
+              <div class="line">
+                <span class="symbol">*</span> -
+                <span class="label">Address:</span>
+                <span class="value">{{ aboutMe.personalInfo.location }}</span>
+              </div>
+              <div class="line">
+                <span class="symbol">*</span> -
+                <span class="label">Language:</span>
+                <span class="value">{{ aboutMe.personalInfo.languages }}</span>
+              </div>
+              <div class="line">
+                <span class="symbol">*</span> -
+                <span class="label">Passport:</span>
+                <span class="value">{{ aboutMe.personalInfo.pasaport }}</span>
               </div>
             </div>
           </div>

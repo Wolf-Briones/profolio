@@ -1,1 +1,123 @@
-<p>about works!</p>
+<div class="about-container">
+  <app-background-video />
+
+  <div class="overlay">
+    <div class="content">
+      <div class="row">
+        <div class="col col-md-6 col-sm-12">
+          <!-- Primera Parte: Rombos -->
+          <div class="diamonds-section">
+            <h2 class="section-subtitle">Mis Fortalezas</h2>
+            <div class="diamonds-container">
+              <div class="diamonds-grid">
+                <!-- Rombo 01 - Top -->
+                <div class="diamond-wrapper diamond-top">
+                  <div class="diamond diamond-01">
+                    <div class="diamond-content">
+                      <span class="diamond-number">
+                        {{ values[0] }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Rombo 02 - Right -->
+                <div class="diamond-wrapper diamond-right">
+                  <div class="diamond diamond-02">
+                    <div class="diamond-content">
+                      <span class="diamond-number">
+                        {{ values[1] }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Rombo 03 - Bottom -->
+                <div class="diamond-wrapper diamond-bottom">
+                  <div class="diamond diamond-03">
+                    <div class="diamond-content">
+                      <span class="diamond-number">
+                        {{ values[2] }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Rombo 04 - Left -->
+                <div class="diamond-wrapper diamond-left">
+                  <div class="diamond diamond-04">
+                    <div class="diamond-content">
+                      <span class="diamond-number">
+                        {{ values[3] }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container">
+            <div class="basic-information">
+              <h2 class="section-subtitle">Basic Information</h2>
+              <div class="code-style">
+                <div class="line">
+                  <span class="symbol">*</span> -
+                  <span class="label">Date of Birth:</span>
+                  <span class="value">{{aboutMe.personalInfo.dateOfBirth}}</span>
+                </div>
+                <div class="line">
+                  <span class="symbol">*</span> -
+                  <span class="label">Email:</span>
+                  <span class="value">{{aboutMe.personalInfo.email}}</span>
+                </div>
+                <div class="line">
+                  <span class="symbol">*</span> -
+                  <span class="label">Phone:</span>
+                  <span class="value">{{aboutMe.personalInfo.phone}}</span>
+                </div>
+                <div class="line">
+                  <span class="symbol">*</span> -
+                  <span class="label">Address:</span>
+                  <span class="value">{{aboutMe.personalInfo.location}}</span>
+                </div>
+                <div class="line">
+                  <span class="symbol">*</span> -
+                  <span class="label">Language:</span>
+                  <span class="value">{{aboutMe.personalInfo.languages}}</span>
+                </div>
+                <div class="line">
+                  <span class="symbol">*</span> -
+                  <span class="label">Passport:</span>
+                  <span class="value">{{aboutMe.personalInfo.pasaport}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col col-md-6 col-sm-12">
+          <!-- Segunda Parte: Tarjetas -->
+          <div class="cards-section">
+            <h2 class="section-subtitle">Detalles</h2>
+            <div class="cards-container">
+              <div
+                class="feature-card"
+                *ngFor="let feature of aboutMe.features; trackBy: trackByFn"
+              >
+                <div class="card-content">
+                  <div class="card-icon">
+                    <div class="icon-number">{{ feature.id }}</div>
+                  </div>
+                  <div class="card-text">
+                    <h3 class="card-title">{{ feature.title }}</h3>
+                    <p class="card-description">{{ feature.description }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

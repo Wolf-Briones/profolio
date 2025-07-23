@@ -67,3 +67,36 @@
     }
   }
 }
+
+
+// Contenedor principal - posicionado fijo en esquina inferior derecha
+.audio-controls-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1050; // Bootstrap z-index alto para estar sobre otros elementos
+  
+  // Transición suave para entrada/salida
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  // Hover effect en el contenedor
+  &:hover {
+    transform: translateY(-2px);
+    
+    .audio-controls {
+      backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  // Estados para animaciones de entrada
+  &.fade-in {
+    animation: fadeInUp 0.5s ease-out;
+  }
+  
+  &.fade-out {
+    animation: fadeOutDown 0.3s ease-in forwards;
+  }
+}

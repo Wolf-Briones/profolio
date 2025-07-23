@@ -1,0 +1,326 @@
+// Variables y mixins
+$primary-color: #38bdf8;
+$primary-hover: #7dd3fc;
+$secondary-color: #0ea5e9;
+$text-primary: #ffffff;
+$text-secondary: #d1d5db;
+$text-muted: #9ca3af;
+$background-dark: #1e1e1e;
+$border-subtle: #444;
+
+// Colores de diamantes
+$diamond-blue: rgba(30, 60, 90, 0.445);
+$diamond-green: rgba(60, 160, 100, 0.37);
+$diamond-orange: rgba(255, 164, 95, 0.37);
+$diamond-red: rgba(255, 82, 2, 0.37);
+
+// Breakpoints
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+$large: 1280px;
+
+// Mixins mejorados
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin glass-effect($opacity: 0.05) {
+  background: rgba(255, 255, 255, $opacity);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@mixin hover-glow($color: $primary-color, $opacity: 0.3) {
+  box-shadow: 0 10px 25px -3px rgba($color, $opacity);
+}
+
+@mixin smooth-transition($properties: all, $duration: 0.3s, $easing: ease) {
+  transition: $properties $duration $easing;
+}
+
+@mixin responsive-size($mobile-size, $desktop-size) {
+  width: $mobile-size;
+  height: $mobile-size;
+  
+  @media (min-width: $tablet) {
+    width: $desktop-size;
+    height: $desktop-size;
+  }
+}
+
+// Componente principal
+.about-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+
+  .overlay {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    min-height: 100vh;
+    @include flex-center;
+    padding: 1rem;
+    
+    @media (max-width: $tablet) {
+      padding: 0.5rem;
+    }
+  }
+
+  .content {
+    margin-top: 60px;
+    margin-bottom: 60px;
+    width: 100%;
+    max-width: 1400px;
+    color: $text-primary;
+    
+    .row {  
+      margin-top: 2rem; 
+    }
+  }
+}
+
+// Sección de diamantes mejorada
+.diamonds-section {
+  margin-bottom: 6rem;
+  z-index: 1;
+
+  .diamonds-container {
+    @include flex-center;
+    padding: 2rem 0;
+    margin-top: 2rem;
+  }
+
+  .diamonds-grid {
+    position: relative;
+    @include responsive-size(28rem, 32rem); // Diamantes más grandes
+  }
+}
+
+.diamond-wrapper {
+  position: absolute;
+  cursor: pointer;
+
+  &.diamond-top {
+    top: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.diamond-right {
+    top: 50%;
+    right: -2rem;
+    transform: translateY(-50%);
+  }
+
+  &.diamond-bottom {
+    bottom: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.diamond-left {
+    top: 50%;
+    left: -2rem;
+    transform: translateY(-50%);
+  }
+}
+
+.diamond {
+  @include responsive-size(14rem, 16rem); // Diamantes más grandes
+  transform: rotate(45deg);
+  border: 2px solid $primary-color;
+  @include smooth-transition();
+
+  // Colores de diamantes usando variables
+  &.diamond-01 {
+    background: linear-gradient(135deg, $diamond-blue, rgba($diamond-blue, 0.8));
+  }
+
+  &.diamond-02 {
+    background: linear-gradient(135deg, $diamond-green, rgba($diamond-green, 0.8));
+  }
+
+  &.diamond-03 {
+    background: linear-gradient(135deg, $diamond-orange, rgba($diamond-orange, 0.8));
+  }
+
+  &.diamond-04 {
+    background: linear-gradient(135deg, $diamond-red, rgba($diamond-red, 0.8));
+  }
+
+  &:hover {
+    transform: rotate(45deg) scale(1.1);
+    @include hover-glow($primary-color, 0.5);
+    border-color: $primary-hover;
+  }
+}
+
+.diamond-content {
+  position: absolute;
+  inset: 0;
+  @include flex-center;
+  transform: rotate(-45deg);
+
+  .diamond-number {
+    color: $text-primary;
+    font-weight: bold;
+    font-size: 1.5rem;
+
+    @media (min-width: $tablet) {
+      font-size: 2rem;
+    }
+  }
+}
+
+// Sección de tarjetas mejorada
+.cards-section {
+  margin-bottom: 4rem;
+
+  .cards-container { 
+    display: grid;
+    gap: 2rem;
+
+    @media (min-width: $tablet) {
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: $desktop) {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 4xl;
+      margin: 0 auto;
+    }
+  }
+}
+
+.feature-card {
+  @include glass-effect();
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  @include smooth-transition();
+
+  &:hover {
+    background: rgba($primary-color, 0.15);
+    border-color: rgba($primary-color, 0.4);
+    @include hover-glow($secondary-color, 0.2);
+    transform: translateX(0.5rem);
+  }
+}
+
+.card-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.card-icon {
+  flex-shrink: 0;
+
+  .icon-number {
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, $primary-color, $secondary-color);
+    border-radius: 0.5rem;
+    @include flex-center;
+    color: $text-primary;
+    font-weight: bold;
+    font-size: 1.125rem;
+    transform: rotate(3deg);
+    @include smooth-transition(transform);
+  }
+}
+
+.feature-card:hover .icon-number {
+  transform: rotate(12deg);
+}
+
+.card-text {
+  flex: 1;
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: $text-primary;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+    @include smooth-transition(color);
+
+    @media (min-width: $tablet) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .card-description {
+    color: $text-secondary;
+    font-size: 1.1rem;
+    font-weight: bold;
+    @include smooth-transition(color);
+  }
+}
+
+.feature-card:hover {
+  .card-title {
+    color: $primary-hover;
+  }
+
+  .card-description {
+    color: $text-primary;
+  }
+}
+
+// Contenedor general mejorado
+.container {
+  @include flex-center;
+  min-height: 30vh;
+}
+
+// Sección de información básica mejorada
+.basic-information {
+  background-color: $background-dark;
+  border-radius: 8px;
+  padding: 20px;
+  font-family: 'Fira Code', 'Courier New', monospace; 
+  color: $text-secondary;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  min-width: 500px;
+
+  .section-subtitle {
+    font-size: 1.5rem;
+    color: $text-primary;
+    margin-bottom: 16px;
+    border-bottom: 1px solid $border-subtle;
+    padding-bottom: 6px;
+  }
+
+  .code-style {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .line {
+      padding-left: 20px;
+      text-align: left;
+      white-space: pre-wrap;
+    }
+
+    .symbol {
+      color: #569cd6;
+      font-weight: bold;
+    }
+
+    .label {
+      color: #ce9178;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    .value {
+      color: #9cdcfe;
+      margin-left: 4px;
+    }
+  }
+}

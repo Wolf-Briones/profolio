@@ -11,7 +11,7 @@ import { ContactComponent } from './shared/components/contact/contact.component'
 
 // Layout principal del portafolio
 import { PortfolioLayoutComponent } from './views/layouts/portfolio-layout/portfolio-layout.component';
-import { PortadaComponent } from './shared/components/portada/portada.component';
+import { PortafolioComponent } from './views/portafolio/portafolio.component';
 
 export const routes: Routes = [
     {
@@ -21,7 +21,7 @@ export const routes: Routes = [
     },
     {
         path: 'home',
-        component: PortadaComponent,
+        component: PortafolioComponent,
         data: { 
             title: 'Franki Briones - Full Stack Developer',
             description: 'Desarrollador Full Stack especializado en Angular, Node.js y tecnologías modernas'

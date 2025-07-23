@@ -1,15 +1,12 @@
 <div class="portada-container">
-  <video autoplay muted loop playsinline class="background-video">
-    <source src="/assets/backgroun/videoplayback.mp4" type="video/mp4" />
-    Tu navegador no soporta video.
-  </video>
+  <app-background-video/>
 
   <div class="overlay">
     <div class="content">
       <img [src]="myPortfolio.imageUrl" alt="Mi Foto" class="profile-pic" />
 
-      <h1 class="nombre">{{myPortfolio.name}}</h1>
-      <p class="rol">{{myPortfolio.role}}</p>
+      <h1 class="nombre">{{myPortfolio.title}}</h1>
+      <p class="rol">{{myPortfolio.subtitle}}</p>
 
       <div class="social-links">
         @if (myPortfolio.urlsProfile.github !== '') {
@@ -50,6 +47,30 @@
         @if (myPortfolio.urlsProfile.email !== '') {
           
         }
+      </div>
+
+      <div class="btns-actions">
+          @if (myPortfolio.buttonsActions.downloadCV.textBtn !== '') {
+            <a [href]="myPortfolio.buttonsActions.downloadCV.url" 
+            target="_blank" class="btn action-btn download">
+              <i class="bi bi-file-earmark-arrow-down"></i>
+              {{myPortfolio.buttonsActions.downloadCV.textBtn}}
+            </a>
+          }
+          @if (myPortfolio.buttonsActions.contactMe.textBtn !== '') {
+            <a [href]="myPortfolio.buttonsActions.contactMe.url" 
+            target="_blank" class="btn action-btn contact">
+              <i class="bi bi-chat-left-dots"></i>
+              {{myPortfolio.buttonsActions.contactMe.textBtn}}
+            </a>
+          }
+          @if (myPortfolio.buttonsActions.viewProjects.textBtn !== '') {
+            <a [href]="myPortfolio.buttonsActions.viewProjects.url" 
+            target="_blank" class="btn action-btn projects">
+              <i class="bi bi-building-add"></i>
+              {{myPortfolio.buttonsActions.viewProjects.textBtn}}
+            </a>
+          }
       </div>
     </div>
   </div>

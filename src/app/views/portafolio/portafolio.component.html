@@ -1,1 +1,31 @@
-<p>portafolio works!</p> 
+<app-sidebar-menu />
+
+@if (layoutService.isFrontPage()) {
+ <app-portada />
+}
+@if (layoutService.isAbout()) {
+  <app-about />
+}
+@if (layoutService.isExperience()) {
+  <app-experience />
+}
+@if (layoutService.isProjects()) {
+  <app-projects />
+}
+@if (layoutService.isSkills()) {
+  <app-skills />
+}
+@if (layoutService.isEducation()) {
+  <app-education />
+}
+@if (layoutService.isExtracurricular()) {
+  <app-extracurricular />
+}
+@if (layoutService.isContact()) {
+  <app-contact />
+}
+
+<!-- Audio de fondo en el header -->
+<div class="audio-controls-container">
+  <app-background-audio></app-background-audio>
+</div>

@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { BackgroundVideoComponent } from '../../../core/components/background-video/background-video.component';
 
 @Component({
   selector: 'app-extracurricular',
-  imports: [],
+  imports: [BackgroundVideoComponent],
   templateUrl: './extracurricular.component.html',
   styleUrl: './extracurricular.component.scss'
 })

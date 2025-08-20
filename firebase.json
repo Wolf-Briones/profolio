@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "public": "dist/franki-briones/browser",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "ssrapp"
+      }
+    ]
+  }
+}

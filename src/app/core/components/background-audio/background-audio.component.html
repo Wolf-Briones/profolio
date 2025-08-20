@@ -1,0 +1,21 @@
+<div class="audio-controls">
+    <audio #audioPlayer [src]="audioSrc()" loop preload="auto" (canplay)="onCanPlay()" (error)="onError($event)">
+    </audio>
+
+    <button class="audio-toggle-btn" [class.playing]="isPlaying()" [class.loading]="isLoading()"
+        [disabled]="isLoading() || hasError()" (click)="toggleAudio()" [title]="getButtonTitle()">
+
+        <span class="icon"><i class="bi" [ngClass]="getIcon()"></i></span>
+        <span class="status-text">{{ getStatusText() }}</span>
+    </button>
+
+    <div class="volume-control" *ngIf="showVolumeControl()">
+        <input type="range" min="0" max="1" step="0.1" [value]="volume()" (input)="setVolume($event)"
+            class="volume-slider">
+        <span class="volume-label">{{ Math.round(volume() * 100) }}%</span>
+    </div>
+
+    <div class="error-message" *ngIf="hasError()">
+        {{ errorMessage() }}
+    </div>
+</div>

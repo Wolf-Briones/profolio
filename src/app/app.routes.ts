@@ -1,17 +1,9 @@
 import { Routes } from '@angular/router';
+import { PorfolioComponent } from './views/porfolio/porfolio.component';
 
 // Importar componentes del portafolio
-import { AboutComponent } from './shared/components/about/about.component';
-import { ExperienceComponent } from './shared/components/experience/experience.component';
-import { ProjectsComponent } from './shared/components/projects/projects.component';
-import { SkillsComponent } from './shared/components/skills/skills.component';
-import { EducationComponent } from './shared/components/education/education.component';
-import { ExtracurricularComponent } from './shared/components/extracurricular/extracurricular.component';
-import { ContactComponent } from './shared/components/contact/contact.component';
 
 // Layout principal del portafolio
-import { PortfolioLayoutComponent } from './views/layouts/portfolio-layout/portfolio-layout.component';
-import { PortafolioComponent } from './views/portafolio/portafolio.component';
 
 export const routes: Routes = [
     {
@@ -21,14 +13,14 @@ export const routes: Routes = [
     },
     {
         path: 'home',
-        component: PortafolioComponent,
-        data: { 
+        component: PorfolioComponent,
+        /* data: { 
             title: 'Franki Briones - Full Stack Developer',
             description: 'Desarrollador Full Stack especializado en Angular, Node.js y tecnologías modernas'
-        }
+        } */
     },
     // Rutas del portafolio con layout compartido
-    {
+    /* {
         path: '',
         component: PortfolioLayoutComponent,
         children: [
@@ -89,7 +81,7 @@ export const routes: Routes = [
                 }
             }
         ]
-    },
+    }, */
     // Rutas adicionales para casos específicos
     {
         path: 'cv',

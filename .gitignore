@@ -40,3 +40,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Ignorar environments de Angular
+/src/environments/*
+!/src/environments/environment.interface.ts

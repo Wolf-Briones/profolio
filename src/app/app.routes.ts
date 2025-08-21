@@ -1,5 +1,9 @@
 import { Routes } from '@angular/router';
 import { PorfolioComponent } from './views/porfolio/porfolio.component';
+import { SobreMiComponent } from './shared/components/sobre-mi/sobre-mi.component';
+import { ProyectosComponent } from './shared/components/proyectos/proyectos.component';
+import { ExperienciaComponent } from './shared/components/experiencia/experiencia.component';
+import { ContactComponent } from './shared/components/contacto/contacto.component';
 
 // Importar componentes del portafolio
 
@@ -12,13 +16,30 @@ export const routes: Routes = [
         pathMatch: 'full',
     },
     {
-        path: 'home',
+        path: 'intro',
         component: PorfolioComponent,
         /* data: { 
             title: 'Franki Briones - Full Stack Developer',
             description: 'Desarrollador Full Stack especializado en Angular, Node.js y tecnologías modernas'
         } */
     },
+    {
+        path: 'about',
+        component: SobreMiComponent,
+    },
+    {
+        path: 'projects',
+        component: ProyectosComponent,
+    },
+    {
+        path: 'experience',
+        component: ExperienciaComponent,
+    },
+    {
+        path: 'contact',
+        component: ContactComponent,
+    },
+    
     // Rutas del portafolio con layout compartido
     /* {
         path: '',
@@ -83,7 +104,7 @@ export const routes: Routes = [
         ]
     }, */
     // Rutas adicionales para casos específicos
-    {
+    /* {
         path: 'cv',
         redirectTo: '/about',
         pathMatch: 'full'
@@ -102,11 +123,11 @@ export const routes: Routes = [
         path: 'hire-me',
         redirectTo: '/contact',
         pathMatch: 'full'
-    },
+    }, */
     // Ruta comodín - redirige a home en lugar de about
     {
         path: '**',
-        redirectTo: '/home'
+        redirectTo: '/intro'
     }
 ];
 

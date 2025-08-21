@@ -217,7 +217,7 @@
 }
 
 .text-gradient {
-  background: -webkit-linear-gradient(315deg, #035831 0%, #018a8a 100%);
+  background: -webkit-linear-gradient(315deg, #22d2ed 0%, #a2e436 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -266,3 +266,58 @@
   fill: #39ff14;
   filter: drop-shadow(0 0 8px #39ff14) drop-shadow(0 0 16px #2ecc11);
 }
+
+.badge { 
+  --bs-badge-padding-x: 0.95em;
+  --bs-badge-padding-y: 0.15em; 
+  --bs-badge-font-weight: 600;
+  --bs-badge-color: #fff;
+  --bs-badge-border-radius: 0.775rem;
+  display: block;
+  padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x); 
+  font-weight: var(--bs-badge-font-weight);
+  line-height: 1;
+  color: var(--bs-badge-color);
+  text-align: center;  
+  border-radius: var(--bs-badge-border-radius);
+}
+
+/* 1. Definir la animación de parpadeo */
+@keyframes blink {
+  0%, 100% {
+    opacity: 1; /* Al inicio y al final, la opacidad es total */
+  }
+  50% {
+    opacity: 0.7; /* A la mitad de la animación, la opacidad es 0 */
+  }
+}
+
+/* 2. Aplicar la animación a la clase */
+.text-badge {
+  margin-top: 8px;
+  animation: blink 1s infinite; /* Nombre, duración y repetición */
+}
+/* Escalar a 70% en pantallas medianas */
+/* Bootstrap utiliza un breakpoint de 768px para dispositivos medianos */
+@media (max-width: 768px) {
+  .badge {
+    transform: scale(0.9);
+    margin-left: auto; margin-right: auto;
+  }
+  .btn-actions{
+    transform: scale(0.8);
+  }
+}
+
+/* Escalar a 50% en pantallas pequeñas */
+/* Bootstrap utiliza un breakpoint de 576px para dispositivos pequeños */
+@media (max-width: 576px) {
+  .badge {
+    transform: scale(0.7);
+    margin-left: auto; margin-right: auto;
+  }
+  .btn-actions{
+    transform: scale(0.7);
+  }
+}
+ 

@@ -1,0 +1,59 @@
+/* Contenedor principal para los botones */
+.navigation-buttons-container {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%); /* Centrado vertical perfecto */
+  z-index: 99; /* Asegura que los botones estén sobre el contenido */
+  pointer-events: none; /* Permite hacer clic en el contenido detrás de los botones */
+  padding: 0 10px; /* Espaciado en los bordes */
+}
+
+/* Estilos base de los botones flotantes */
+.btn-floating-back,
+.btn-floating-forward {
+  font-size: 1.5rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 2px;
+  pointer-events: all; /* Reactiva el clic solo en los botones */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  opacity: 0.8;
+  color: #00d4ff;
+}
+
+/* Botón izquierdo (Atrás) */
+.btn-floating-back {
+  background-color: #00000031;
+  border-color: #00d4ff;
+}
+
+/* Botón derecho (Adelante) */
+.btn-floating-forward {
+  background-color: #00000031;
+  border-color: #00d4ff;
+}
+
+/* Efectos al pasar el ratón */
+.btn-floating-back:hover,
+.btn-floating-forward:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px #00d4ff;
+  opacity: 1;
+}
+
+/* Media query para pantallas más pequeñas (opcional, para mejor UX) */
+@media (max-width: 768px) {
+  .btn-floating-back,
+  .btn-floating-forward {
+    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+  }
+}

@@ -1,0 +1,54 @@
+ 
+
+.professional-timeline {
+  border-left: 2px solid #dee2e6; /* Linea vertical para la linea de tiempo */
+  position: relative;
+  padding-left: 2rem;
+  padding-bottom: 2rem;
+}
+
+.timeline-item {
+  /* No necesitamos un div adicional, el pseudo-elemento se encargará de la línea */
+  
+  /* Círculo de la línea de tiempo */
+  &::before {
+    content: '';
+    position: absolute;
+    left: -0.65rem;
+    top: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    background-color: #0d6efd; /* Color azul de Bootstrap */
+    border: 3px solid #fff;
+    border-radius: 50%;
+    z-index: 1;
+  }
+  
+  /* Estilo para el contenido de cada item */
+  .timeline-content {
+    background-color: #f8f9fa; /* Fondo gris claro */
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+  }
+}
+
+.badge {
+  font-size: 0.75em;
+  font-weight: 500;
+  padding: 0.5em 0.8em;
+}
+
+/* Colores de los badges para tecnologías */
+.text-bg-secondary {
+  background-color: #6c757d !important;
+  color: #fff;
+}
+
+/* Colores para el badge 'Actual' */
+.bg-success-subtle {
+  background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+.text-success-emphasis {
+  color: #198754 !important;
+}

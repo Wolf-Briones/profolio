@@ -1,0 +1,36 @@
+
+    <div class="arcade-machine">
+      <div class="screen-container">
+        <div class="game-header">
+          <div class="game-title">{{gameTitle}}</div>
+          <div class="score-display">
+            SCORE: {{score}} | HIGH: {{highScore}}
+          </div>
+        </div>
+        
+        <canvas #gameCanvas 
+                width="320" 
+                height="320" 
+                (keydown)="onKeyDown($event)">
+        </canvas>
+        
+        <div class="game-over" [class.show]="showGameOver">
+          <div style="font-size: 14px; margin-bottom: 10px;">GAME OVER</div>
+          <div style="font-size: 8px; margin-bottom: 5px;">FINAL SCORE: {{score}}</div>
+          <button class="restart-btn" (click)="restartGame()">RESTART</button>
+        </div>
+      </div>
+      
+      <div class="controls">
+        <div class="control-info">
+          USE ARROW KEYS OR TOUCH CONTROLS<br>
+          EAT FOOD TO GROW AND SCORE!
+        </div>
+        <div class="control-buttons">
+          <button class="control-btn btn-up" (click)="changeDirection('up')">↑</button>
+          <button class="control-btn btn-left" (click)="changeDirection('left')">←</button>
+          <button class="control-btn btn-right" (click)="changeDirection('right')">→</button>
+          <button class="control-btn btn-down" (click)="changeDirection('down')">↓</button>
+        </div>
+      </div>
+    </div>

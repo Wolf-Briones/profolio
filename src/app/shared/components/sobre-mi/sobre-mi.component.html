@@ -1,0 +1,129 @@
+<div class="d-flex flex-column justify-content-center">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <h3 class="display-1 fw-bolder arcade-title">
+        {{ _INFO_ABOUT().sobreMiTitulo }}
+      </h3>
+      <p class="fs-4 fw-bolder text-warning px-4 mx-4 border border-success"
+        [appTypewriter]="_INFO_ABOUT().sobreMiContenido" [speed]="35" [delay]="100" [loop]="false">
+        {{ _INFO_ABOUT().sobreMiContenido }}
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <!-- Este contenedor col-12 controla la disposición de las tarjetas de skills -->
+      <div class="col-12 col-lg-3 col-md-6 d-flex flex-column">
+
+        <!-- Este div ahora es un contenedor flexbox que se expandirá -->
+        <div class="skills d-flex flex-column h-100 w-100">
+
+          <!-- El bucle principal para las categorías -->
+          <div *ngFor="let category of categories">
+            <div class="p-3 bg-dark-subtle border border-success rounded-3 arcade-panel text-white mb-3">
+              <h2 class="fs-5 text-uppercase fw-bold text-success text-end">
+                {{ category }}
+              </h2>
+
+              <div *ngFor="let skill of techSkills[category]">
+                <div class="list-unstyled fw-bold">
+                  <div class="row">
+                    <div class="col-7">
+                      <h5 class="fw-bold text-end mb-0" [appTypewriter]="skill.name" [speed]="95" [delay]="100"
+                        [loop]="false">
+                        {{ skill.name }}
+                      </h5>
+                    </div>
+                    <div class="col-5">
+                      <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" [style.width]="skill.level + '%'"
+                          [attr.aria-valuenow]="skill.level" aria-valuemin="0" aria-valuemax="100">
+                          {{ skill.level }}%
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6 d-flex flex-column min-vh-100">
+        <!-- El arcade-screen ocupa una parte fija del espacio -->
+        <div
+          class="w-100 position-relative arcade-screen ratio ratio-16x9 bg-dark-subtle border border-success rounded-3 mb-3"
+          style=" background-image: url('assets/images/planet future.gif'); background-size: cover;
+                  background-position: center; background-repeat: no-repeat; ">
+          <!-- Overlay semi-transparente para mejorar legibilidad del texto -->
+          <div class="position-absolute w-100 h-100 bg-dark bg-opacity-50 rounded-3"></div>
+
+          <div class="position-absolute top-50 start-50 translate-middle text-center" style="z-index: 10;">
+            <!-- Contenido del arcade-screen -->
+            <p class="fs-2 text-danger fw-bolder text-uppercase text-shadow-glow pt-5">
+              {{ _INFO_ABOUT().miHistoriaTitulo }}
+            </p>
+            @if (stateGame() === 'intro') {
+            <p class="fs-3 text-success arcade-blink-text p-4" [appTypewriter]="_INFO_ABOUT().miHistoriaContenido[0]"
+              [speed]="35" [delay]="100" [loop]="false">
+              {{ _INFO_ABOUT().miHistoriaContenido[0] }}
+            </p>
+            } @if (stateGame() === 'passion') {
+            <p class="fs-3 text-info arcade-blink-text p-4" [appTypewriter]="_INFO_ABOUT().miHistoriaContenido[1]"
+              [speed]="35" [delay]="100" [loop]="false">
+              {{ _INFO_ABOUT().miHistoriaContenido[1] }}
+            </p>
+            } @if (stateGame() === 'hobby') {
+            <p class="fs-3 text-warning arcade-blink-text p-4" [appTypewriter]="_INFO_ABOUT().miHistoriaContenido[2]"
+              [speed]="35" [delay]="100" [loop]="false">
+              {{ _INFO_ABOUT().miHistoriaContenido[2] }}
+            </p>
+            }
+          </div>
+
+          <div class="crt-effect"></div>
+        </div>
+
+        <!-- Nueva sección que ocupa el espacio restante -->
+        <div class="d-flex justify-content-center h-50">
+          <div class="container-fluid bg-secondary-subtle p-4 rounded-3 flex-grow-1">
+            <app-arcade-game-screen></app-arcade-game-screen>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-3 d-flex flex-column justify-content-start">
+        <button href="#" class="btn btn-lg btn-success text-uppercase fw-bolder mb-3 btn-glow-pulse"
+          (click)="changeStateGame('intro')">
+          Intro
+        </button>
+        <button href="#" class="btn btn-lg btn-info text-uppercase fw-bolder mb-3 btn-glow-pulse"
+          (click)="changeStateGame('passion')">
+          Passion
+        </button>
+        <button href="#" class="btn btn-lg btn-warning text-uppercase fw-bolder mb-3 btn-glow-pulse"
+          (click)="changeStateGame('hobby')">
+          Hobby
+        </button>
+        <button href="#" class="btn btn-lg btn-danger text-uppercase mb-3 fw-bolder btn-glow-pulse"
+          (click)="goToGames()">
+          Next
+        </button>
+        <button href="#" class="btn btn-lg btn-dark text-uppercase fw-bolder btn-glow-pulse mb-3" (click)="goBack()">
+          Back
+        </button>
+
+        <div class="bg-dark p-2 shadow-lg code-container border border-success rounded-3">
+          <h6 class="mini-text-title text-white text-center my-2 p-1">
+            Microservicio Alien
+          </h6>
+          <pre class="text-success rounded code-output mini-text">
+                   <div *ngFor="let line of displayedLines" class="line typing-animation">{{ line }}</div>         
+                </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Agrega el componente de botones de navegación -->
+<app-navigation-buttons></app-navigation-buttons>

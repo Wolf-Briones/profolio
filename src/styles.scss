@@ -335,7 +335,29 @@ body {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   font-family: 'Goldman', sans-serif; 
+  height: 100dvh;
 }
+
+/* styles.scss o el SCSS del componente */
+.typing-caret {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: -0.12em; /* pegado al texto */
+    top: 0.1em;
+    width: 2px;
+    height: 1.1em;
+    background: currentColor;
+    animation: blink-caret .8s steps(1) infinite;
+  }
+}
+
+@keyframes blink-caret {
+  50% { opacity: 0; }
+}
+
 
 hr {
   margin: 1rem 0;

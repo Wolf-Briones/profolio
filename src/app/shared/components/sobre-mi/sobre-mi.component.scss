@@ -1,0 +1,44 @@
+.mini-text-title {
+    font-size: 0.67rem;
+}
+
+.mini-text {
+    font-size: 0.42rem;
+}
+
+.arcade-screen {
+    min-height: 34dvh;
+    max-height: 60dvh;
+}
+
+ 
+@media (max-width: 576px) {
+    .arcade-screen {
+        min-height: 54dvh;
+        max-height: 60dvh;
+    }
+
+    .skills {
+        transform: scale(0.8);
+    } 
+
+    .arcade-blink-text {
+        font-size: small !important;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .arcade-screen {
+        min-height: 34dvh;
+        max-height: 60dvh;
+    }
+
+    .skills {
+        transform: scale(0.8); 
+
+    } 
+    .arcade-blink-text {
+        font-size: medium !important;
+    }
+}

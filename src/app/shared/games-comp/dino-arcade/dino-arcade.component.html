@@ -1,0 +1,41 @@
+
+    <div class="arcade-machine">
+      <div class="screen-container">
+        <div class="game-header">
+          <div class="game-title">RETRO DINO RUN</div>
+          <div class="score-display">
+            <span>SCORE: {{score.toString().padStart(5, '0')}}</span>
+            <span>HIGH: {{highScore.toString().padStart(5, '0')}}</span>
+          </div>
+        </div>
+        
+        <canvas #gameCanvas 
+                width="480" 
+                height="200" 
+                (touchstart)="onTouchStart($event)">
+        </canvas>
+        
+        <div class="start-message" [style.display]="!gameStarted ? 'block' : 'none'">
+          PRESS SPACE OR TOUCH TO START
+        </div>
+        
+        <div class="game-over" [class.show]="showGameOver">
+          <div style="font-size: 14px; margin-bottom: 10px;">GAME OVER</div>
+          <div style="font-size: 8px; margin-bottom: 5px;">
+            FINAL SCORE: {{score.toString().padStart(5, '0')}}
+          </div>
+          <button class="restart-btn" (click)="restartGame()">RESTART</button>
+        </div>
+      </div>
+      
+      <div class="controls">
+        <div class="control-info">
+          PRESS SPACE TO JUMP OR TAP BUTTONS<br>
+          AVOID THE CACTI AND BIRDS!
+        </div>
+        <div class="control-buttons">
+          <button class="control-btn" (click)="jump()">JUMP</button>
+          <button class="control-btn" (click)="duck()">DUCK</button>
+        </div>
+      </div>
+    </div>

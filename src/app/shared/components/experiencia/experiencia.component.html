@@ -1,0 +1,50 @@
+
+<!-- professional-experience.component.html -->
+<div class="container py-5">
+  <div class="row text-center mb-5">
+    <div class="col-12">
+      <h1 class="fw-bolder">Experiencia Profesional</h1>
+      <p class="text-secondary">Mi trayectoria profesional en el desarrollo de software</p>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <!-- Timeline container -->
+      <div class="professional-timeline">
+        <div *ngFor="let experience of experiences" class="timeline-item position-relative mb-5">
+          <div class="timeline-content rounded-3 p-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h5 class="fw-bold mb-1">{{ experience.title }}</h5>
+                <a [href]="experience.companyLink" class="text-decoration-none text-primary fw-bolder">{{ experience.company }}</a>
+              </div>
+              <span *ngIf="experience.isCurrent" class="badge rounded-pill bg-success-subtle text-success-emphasis text-uppercase p-2">Actual</span>
+            </div>
+            
+            <div class="d-flex align-items-center text-secondary mb-3">
+              <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="16" height="16" fill="currentColor" class="bi bi-calendar-check me-2" viewBox="0 0 16 16">
+                <path d="M10.854 7.037a.5.5 0 0 0-.708-.708L7.5 9.793l-.646-.647a.5.5 0 1 0-.708.708l.647.646a.5.5 0 0 0 .708 0l3-3Z"/>
+                <path d="M10.5 1.5a.5.5 0 0 0-1 0V2a.5.5 0 0 0 1 0zM4.5 1.5a.5.5 0 0 0-1 0V2a.5.5 0 0 0 1 0z"/>
+                <path d="M11 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-6 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                <path d="M13.5 1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h2V.5a.5.5 0 0 1 1 0V1h4V.5a.5.5 0 0 1 1 0V1h2a1 1 0 0 1 1 1zM2 2v1h11V2h-2V1h-1v1H8V1H7v1H4V1H3v1H2zm11 3H2v9h11V5z"/>
+              </svg>
+              <span>{{ experience.timeframe }}</span>
+              <span class="mx-2">•</span>
+              <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill me-2" viewBox="0 0 16 16">
+                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+              </svg>
+              <span>{{ experience.location }}</span>
+            </div>
+            
+            <p class="text-secondary">{{ experience.description }}</p>
+            
+            <div class="d-flex flex-wrap gap-2">
+              <span *ngFor="let tech of experience.technologies" class="badge rounded-pill text-bg-secondary">{{ tech }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

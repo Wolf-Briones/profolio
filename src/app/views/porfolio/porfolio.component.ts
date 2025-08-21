@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { CONFIGURACIONES, LanguageNames, Languages,  } from '../../shared/service/data-profile-language';
 import { Theme, ThemeService } from '../../core/services/theme-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-porfolio',
@@ -35,9 +36,9 @@ export class PorfolioComponent {
 
   private languageService = inject(LanguageService);
 
-  constructor(private themeService: ThemeService) {
+  constructor(private themeService: ThemeService, private router: Router) {
     this.selectedTheme = this.themeService.theme();
-    this.selectedLanguage = this.languageService.getCurrentLanguage(); // ← idioma inicial
+    this.selectedLanguage = this.languageService.getCurrentLanguage(); // ← idioma inicial  
   }
 
   changeTheme() {
@@ -86,4 +87,7 @@ export class PorfolioComponent {
     window.open(cvUrl, '_blank');
   }
 
+  goToGames() {
+      this.router.navigate(['/about']); 
+  }
 }

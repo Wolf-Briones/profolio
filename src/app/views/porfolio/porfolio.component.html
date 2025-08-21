@@ -1,32 +1,34 @@
-<div class="d-flex flex-column h-100">
-    <main class="flex-shrink-0">
+<div class="d-flex flex-column h-100 justify-content-center">
+    <main class="flex-shrink-1">
         <!-- Header-->
         <header class="py-5">
-            <div class="container px-5 pb-5">
+            <div class="container">
                 <div class="row gx-5 align-items-center">
-                    <div class="col-xxl-5">
+                    <div class="col-xxl-5 col-lg-6 col-md-8 mx-auto">
                         <!-- Header text content-->
                         <div class="text-center text-xxl-start">
                             <div class="row">
-                                <div class="col">
+                                <div class="col col-sm-12">
                                     <!-- settings.component.html -->
                                     <div class="card border-primary p-3">
                                         <h5>{{ configuracionActual().tituloIdioma }}</h5>
                                         <select class="form-select mt-2" [(ngModel)]="selectedTheme"
                                             (change)="changeTheme()">
-                                            <option value="" disabled selected>{{ configuracionActual().seleccionarTema }}</option>
+                                            <option value="" disabled selected>{{ configuracionActual().seleccionarTema
+                                                }}</option>
                                             <option value="light">🌞 {{ configuracionActual().tema[0] }}</option>
                                             <option value="dark">🌙 {{ configuracionActual().tema[1] }}</option>
                                             <option value="nightvision">🟢 {{ configuracionActual().tema[2] }}</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div class="col col-sm-12">
                                     <div class="card border-primary p-3">
                                         <h5>{{ configuracionActual().tituloTema }}</h5>
                                         <select class="form-select mt-2" [(ngModel)]="selectedLanguage"
                                             (change)="changeLanguage()">
-                                            <option value="" disabled selected>{{ configuracionActual().seleccionarIdioma }}</option>
+                                            <option value="" disabled selected>{{
+                                                configuracionActual().seleccionarIdioma }}</option>
                                             <option *ngFor="let lang of languages()" [value]="lang.key">
                                                 {{ lang.label }}
                                             </option>
@@ -34,50 +36,76 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="badge bg-gradient-primary-to-secondary text-white my-4">
-                                <h3 class="text-uppercase">
-                                    {{ configuracionActual().skills[0] }} &middot; 
-                                    {{ configuracionActual().skills[1] }} &middot; 
-                                    {{ configuracionActual().skills[2] }}</h3>
+
+                            <div class="row my-4">
+                                <div class="col col-sm-12 col-md-4">
+                                    <div class="badge text-white border-primary">
+                                        <h6 class="text-badge text-uppercase"> {{ configuracionActual().skills[0] }}
+                                        </h6>
+                                    </div>
+                                </div>
+                                <div class="col col-sm-12 col-md-4">
+                                    <div class="badge text-white border-primary">
+                                        <h6 class="text-badge text-uppercase"> {{ configuracionActual().skills[1] }}
+                                        </h6>
+                                    </div>
+                                </div>
+                                <div class="col col-sm-12 col-md-4">
+                                    <div class="badge text-white border-primary">
+                                        <h6 class="text-badge text-uppercase"> {{ configuracionActual().skills[2] }}
+                                        </h6>
+                                    </div>
+                                </div>
                             </div>
                             <div class="fs-3 fw-light text-muted">
                                 {{ configuracionActual().slogan }}
                             </div>
-                            <h1 class="display-3 fw-bolder my-5">
-                                <span class="text-gradient d-inline">
+                            <h3 class="display-3 fw-bolder my-5">
+                                <span class="text-gradient d-inline alien-pulse">
                                     Franki Briones
                                 </span>
-                            </h1>
-                            <div class="d-flex justify-content-center mb-4"> 
-                                <a (click)="openlinkedin()" href="#" target="_blank" class="btn btn-dark mx-2" style="border-color: #28a745; color: #28a745;">
+                            </h3>
+                            <div class="d-flex justify-content-center mb-4">
+                                <a (click)="openlinkedin()" href="#" target="_blank" class="btn btn-dark mx-2"
+                                    style="border-color: #28a745; color: #28a745;">
                                     <i class="bi bi-linkedin"></i>
-                                </a> 
-                                <a (click)="openStackOverflow()" href="3" target="_blank" class="btn btn-dark mx-2" style="border-color: #28a745; color: #28a745;">
+                                </a>
+                                <a (click)="openStackOverflow()" href="3" target="_blank" class="btn btn-dark mx-2"
+                                    style="border-color: #28a745; color: #28a745;">
                                     <i class="bi bi-stack-overflow"></i>
-                                </a> 
-                                <a (click)="openGitHub()" href="#" target="_blank" class="btn btn-dark mx-2" style="border-color: #28a745; color: #28a745;">
+                                </a>
+                                <a (click)="openGitHub()" href="#" target="_blank" class="btn btn-dark mx-2"
+                                    style="border-color: #28a745; color: #28a745;">
                                     <i class="bi bi-github"></i>
-                                </a> 
-                                <a (click)="openInstagram()" href="#" target="_blank" class="btn btn-dark mx-2" style="border-color: #28a745; color: #28a745;">
+                                </a>
+                                <a (click)="openInstagram()" href="#" target="_blank" class="btn btn-dark mx-2"
+                                    style="border-color: #28a745; color: #28a745;">
                                     <i class="bi bi-instagram"></i>
                                 </a>
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#yapeModal" class="btn btn-outline-light mx-2"  target="_blank" class="btn btn-dark mx-2" style="border-color: #28a745; color: #28a745;">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#yapeModal"
+                                    class="btn btn-outline-light mx-2" target="_blank" class="btn btn-dark mx-2"
+                                    style="border-color: #28a745; color: #28a745;">
                                     <i class="bi bi-cash-coin"></i>
-                                </a> 
-                            </div> 
-                            <div
-                                class="d-flex justify-content-center">
-                                <a class="btn btn-primary border-primary btn-sm px-5 py-1 fs-6 fw-bolder" 
+                                </a>
+                            </div>
+                            <div class="d-flex justify-content-center btn-actions">
+                                <button class="btn btn-primary border-primary btn-sm px-5 py-1 fs-6 fw-bolder"
                                     data-bs-toggle="modal" data-bs-target="#callModal">
-                                    {{ configuracionActual().buttons[0] }}</a>
-                                <a class="btn btn-info border-primary btn-sm px-5 py-1 fs-6 fw-bolder"
-                                    href="projects.html">{{ configuracionActual().buttons[1] }}</a>
-                                <a class="btn border-primary btn-sm px-5 py-1 fs-6 fw-bolder"
-                                    (click)="downloadCV()" href="#">{{ configuracionActual().buttons[2] }}</a>
+                                    <span class="">{{ configuracionActual().buttons[0] }}</span> 
+                                </button>
+
+                                <button class="btn btn-info border-primary btn-sm px-5 py-1 fs-6 fw-bolder"
+                                    (click)="goToGames()">{{ configuracionActual().buttons[1] }}
+                                </button>
+
+                                <button class="btn border-primary btn-sm px-5 py-1 fs-6 fw-bolder"
+                                    (click)="downloadCV()">
+                                    {{ configuracionActual().buttons[2] }}
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xxl-7">
+                    <div class="col-xxl-7 col-lg-6 col-md-4 d-none d-xxl-block">
                         <!-- Header profile picture-->
                         <div class="d-flex justify-content-center mt-5 mt-xxl-0">
                             <div class="profile bg-gradient-primary-to-secondary">
@@ -378,44 +406,49 @@
 </div>
 
 <div class="modal fade" id="yapeModal" tabindex="-1" aria-labelledby="yapeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background-color: #000; color: #fff; border: 1px solid #28a745;">
-      <div class="modal-header" style="border-bottom: 1px solid #28a745;">
-        <h5 class="modal-title" id="yapeModalLabel">{{ configuracionActual().coffe[0] }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
-      </div>
-      <div class="modal-body text-center">
-        <p>{{ configuracionActual().coffe[1] }}</p>
-        <img src="/assets/mi-yape-qr.jpeg" alt="Código QR de Yape" class="img-fluid my-3" style="border: 2px solid #28a745; padding: 5px; border-radius: 10px; max-width: 250px;">
-        <p>
-          Franki Briones
-        </p>
-      </div>
-      <div class="modal-footer" style="border-top: 1px solid #28a745;">
-        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal" style="border-color: #28a745; color: #28a745;">Cerrar</button>
-      </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color: #000; color: #fff; border: 1px solid #28a745;">
+            <div class="modal-header" style="border-bottom: 1px solid #28a745;">
+                <h5 class="modal-title" id="yapeModalLabel">{{ configuracionActual().coffe[0] }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>{{ configuracionActual().coffe[1] }}</p>
+                <img src="/assets/mi-yape-qr.jpeg" alt="Código QR de Yape" class="img-fluid my-3"
+                    style="border: 2px solid #28a745; padding: 5px; border-radius: 10px; max-width: 250px;">
+                <p>
+                    Franki Briones
+                </p>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #28a745;">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal"
+                    style="border-color: #28a745; color: #28a745;">Cerrar</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Modal de confirmación de llamada -->
 <div class="modal fade" id="callModal" tabindex="-1" aria-labelledby="callModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background-color: #000; color: #fff; border: 1px solid #28a745;">
-      <div class="modal-header" style="border-bottom: 1px solid #28a745;">
-        <h5 class="modal-title" id="callModalLabel">{{ configuracionActual().callme[0] }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
-      </div>
-      <div class="modal-body text-center">
-        <p>{{ configuracionActual().callme[1] }}</p>
-        <p class="text-muted">{{ phoneNumber }}</p>
-      </div>
-      <div class="modal-footer" style="border-top: 1px solid #28a745;">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ configuracionActual().callme[2] }}</button>
-        <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" (click)="makeCall()" style="border-color: #28a745; color: #28a745;">
-          {{ configuracionActual().callme[3] }}
-        </button>
-      </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color: #000; color: #fff; border: 1px solid #28a745;">
+            <div class="modal-header" style="border-bottom: 1px solid #28a745;">
+                <h5 class="modal-title" id="callModalLabel">{{ configuracionActual().callme[0] }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>{{ configuracionActual().callme[1] }}</p> 
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #28a745;">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ configuracionActual().callme[2]
+                    }}</button>
+                <button type="button" class="btn btn-warning text-light" data-bs-dismiss="modal" (click)="makeCall()"
+                    style="border-color: #28a745; color: #28a745;">
+                    {{ configuracionActual().callme[3] }}
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

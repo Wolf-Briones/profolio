@@ -19,6 +19,16 @@ interface PowerUp {
   speedY: number;
 }
 
+interface TouchButton {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
+  action: string;
+  isPressed: boolean;
+}
+
 @Component({
   selector: 'app-arcade-game-screen',
   imports: [],
@@ -38,6 +48,11 @@ export class ArcadeGameScreenComponent implements OnInit, OnDestroy {
   private readonly SHOOT_COOLDOWN = 300; // milisegundos
   private readonly ALIEN_BULLET_SPEED = 3;
   private readonly POWER_UP_SPEED = 2;
+  
+  // Variables de detección de dispositivo móvil
+  public isMobile: boolean = false;
+  private touchButtons: TouchButton[] = [];
+  private continuousShoot: boolean = false;
   
   // Game state variables
   private gameState: 'intro' | 'playing' | 'win' | 'gameOver' | 'paused' = 'intro';
@@ -94,6 +109,9 @@ export class ArcadeGameScreenComponent implements OnInit, OnDestroy {
     const canvas = this.canvasRef.nativeElement;
     this.ctx = canvas.getContext('2d')!;
     
+    // Detectar si es dispositivo móvil
+    this.isMobile = this.detectMobileDevice();
+    
     this.setCanvasSize();
     window.addEventListener('resize', () => this.setCanvasSize());
     
@@ -102,6 +120,11 @@ export class ArcadeGameScreenComponent implements OnInit, OnDestroy {
     
     // Inicializar estrellas de fondo
     this.initStars();
+    
+    // Inicializar controles táctiles si es móvil
+    if (this.isMobile) {
+      this.initTouchControls();
+    }
     
     // Iniciar la carga de Tone.js
     this.loadToneJs();
@@ -113,6 +136,191 @@ export class ArcadeGameScreenComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     cancelAnimationFrame(this.animationFrameId);
     this.saveHighScore();
+  }
+  
+  private detectMobileDevice(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+           || ('ontouchstart' in window) 
+           || (navigator.maxTouchPoints > 0);
+  }
+  
+  private setCanvasSize(): void {
+    const canvas = this.canvasRef.nativeElement;
+    const container = canvas.parentElement;
+    if (container) {
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    } else {
+      canvas.width = this.isMobile ? window.innerWidth : 800;
+      canvas.height = this.isMobile ? window.innerHeight : 600;
+    }
+    
+    // Reposicionar jugador después del redimensionado
+    if (this.player) {
+      this.player.x = Math.min(this.player.x, canvas.width - this.player.width);
+      this.player.y = canvas.height - this.player.height - (this.isMobile ? 100 : 10);
+    }
+    
+    // Reconfigurar botones táctiles si es móvil
+    if (this.isMobile) {
+      this.setupTouchButtons();
+    }
+  }
+  
+  private initTouchControls(): void {
+    const canvas = this.canvasRef.nativeElement;
+    
+    // Configurar botones táctiles
+    this.setupTouchButtons();
+    
+    // Event listeners para touch
+    canvas.addEventListener('touchstart', (e) => this.onTouchStart(e), { passive: false });
+    canvas.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
+    canvas.addEventListener('touchend', (e) => this.onTouchEnd(e), { passive: false });
+    
+    // Prevenir scroll en el canvas
+    canvas.addEventListener('touchstart', (e) => e.preventDefault());
+    canvas.addEventListener('touchmove', (e) => e.preventDefault());
+  }
+  
+  private setupTouchButtons(): void {
+    const canvas = this.canvasRef.nativeElement;
+    const buttonHeight = 60;
+    const buttonWidth = 80;
+    const margin = 20;
+    const bottomOffset = 20;
+    
+    this.touchButtons = [
+      {
+        x: margin,
+        y: canvas.height - buttonHeight - bottomOffset,
+        width: buttonWidth,
+        height: buttonHeight,
+        label: '◄',
+        action: 'left',
+        isPressed: false
+      },
+      {
+        x: margin + buttonWidth + 20,
+        y: canvas.height - buttonHeight - bottomOffset,
+        width: buttonWidth,
+        height: buttonHeight,
+        label: '►',
+        action: 'right',
+        isPressed: false
+      },
+      {
+        x: canvas.width - buttonWidth - margin,
+        y: canvas.height - buttonHeight - bottomOffset,
+        width: buttonWidth,
+        height: buttonHeight,
+        label: '🔫',
+        action: 'shoot',
+        isPressed: false
+      },
+      {
+        x: canvas.width - buttonWidth * 2 - margin - 20,
+        y: canvas.height - buttonHeight - bottomOffset,
+        width: buttonWidth * 0.8,
+        height: buttonHeight * 0.8,
+        label: '⏸',
+        action: 'pause',
+        isPressed: false
+      }
+    ];
+  }
+  
+  private onTouchStart(event: TouchEvent): void {
+    event.preventDefault();
+    const rect = this.canvasRef.nativeElement.getBoundingClientRect();
+    
+    Array.from(event.touches).forEach(touch => {
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      
+      if (this.gameState === 'playing' || this.gameState === 'paused') {
+        this.handleTouchInput(x, y, 'start');
+      } else if (this.gameState === 'intro' || this.gameState === 'gameOver' || this.gameState === 'win') {
+        // Toque en cualquier lugar para comenzar/continuar
+        this.handleMenuTouch();
+      }
+    });
+  }
+  
+  private onTouchMove(event: TouchEvent): void {
+    event.preventDefault();
+    // Mantener los botones presionados si el dedo sigue sobre ellos
+    const rect = this.canvasRef.nativeElement.getBoundingClientRect();
+    
+    // Reset all button states
+    this.touchButtons.forEach(btn => btn.isPressed = false);
+    this.player.isMovingLeft = false;
+    this.player.isMovingRight = false;
+    this.continuousShoot = false;
+    
+    Array.from(event.touches).forEach(touch => {
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      
+      if (this.gameState === 'playing') {
+        this.handleTouchInput(x, y, 'move');
+      }
+    });
+  }
+  
+  private onTouchEnd(event: TouchEvent): void {
+    event.preventDefault();
+    
+    // Reset button states and movement
+    this.touchButtons.forEach(btn => btn.isPressed = false);
+    this.player.isMovingLeft = false;
+    this.player.isMovingRight = false;
+    this.continuousShoot = false;
+  }
+  
+  private handleTouchInput(x: number, y: number, type: 'start' | 'move'): void {
+    this.touchButtons.forEach(button => {
+      if (this.isPointInButton(x, y, button)) {
+        button.isPressed = true;
+        
+        switch (button.action) {
+          case 'left':
+            this.player.isMovingLeft = true;
+            break;
+          case 'right':
+            this.player.isMovingRight = true;
+            break;
+          case 'shoot':
+            if (type === 'start') {
+              this.shoot();
+            }
+            this.continuousShoot = true;
+            break;
+          case 'pause':
+            if (type === 'start') {
+              this.togglePause();
+            }
+            break;
+        }
+      }
+    });
+  }
+  
+  private handleMenuTouch(): void {
+    if (this.gameState === 'intro' || this.gameState === 'gameOver') {
+      this.initGame();
+      this.startGame();
+    } else if (this.gameState === 'win') {
+      this.gameState = 'playing';
+      this.createAliens();
+    }
+  }
+  
+  private isPointInButton(x: number, y: number, button: TouchButton): boolean {
+    return x >= button.x && 
+           x <= button.x + button.width && 
+           y >= button.y && 
+           y <= button.y + button.height;
   }
   
   private loadHighScore(): void {
@@ -182,10 +390,15 @@ export class ArcadeGameScreenComponent implements OnInit, OnDestroy {
     
     // Posicionar jugador
     this.player.x = this.canvasRef.nativeElement.width / 2 - this.player.width / 2;
-    this.player.y = this.canvasRef.nativeElement.height - this.player.height - 10;
+    this.player.y = this.canvasRef.nativeElement.height - this.player.height - (this.isMobile ? 100 : 10);
     
     this.createAliens();
     this.initStars();
+    
+    // Reconfigurar botones táctiles si es móvil
+    if (this.isMobile) {
+      this.setupTouchButtons();
+    }
   }
   
   /**
@@ -193,14 +406,18 @@ export class ArcadeGameScreenComponent implements OnInit, OnDestroy {
    */
   private createAliens(): void {
     this.aliens = [];
-    const alienWidth = 20;
-    const alienHeight = 20;
-    const padding = 10;
-    const offsetX = 50;
+    const alienWidth = this.isMobile ? 15 : 20;
+    const alienHeight = this.isMobile ? 15 : 20;
+    const padding = this.isMobile ? 8 : 10;
+    const offsetX = this.isMobile ? 20 : 50;
     const offsetY = 30;
 
-    for (let row = 0; row < this.alienRows; row++) {
-      for (let col = 0; col < this.alienCols; col++) {
+    // Ajustar número de aliens para móvil
+    const cols = this.isMobile ? Math.min(this.alienCols, 6) : this.alienCols;
+    const rows = this.isMobile ? Math.min(this.alienRows, 4) : this.alienRows;
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
         // Diferentes tipos de aliens con diferentes puntuaciones
         let alienType = 'basic';
         let points = 10;
@@ -229,7 +446,7 @@ export class ArcadeGameScreenComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Maneja la entrada del teclado.
+   * Maneja la entrada del teclado (para desktop).
    */
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
@@ -486,6 +703,11 @@ export class ArcadeGameScreenComponent implements OnInit, OnDestroy {
     this.checkGameState();
     this.alienShoot();
     this.spawnPowerUp();
+    
+    // Disparo continuo en móvil
+    if (this.isMobile && this.continuousShoot) {
+      this.shoot();
+    }
   }
   
   private updateBackground(): void {
@@ -660,362 +882,369 @@ export class ArcadeGameScreenComponent implements OnInit, OnDestroy {
         break;
     }
   }
-  
+
   /**
-   * Función auxiliar para verificar colisiones rectangulares.
+   * Verifica si dos objetos están colisionando.
    */
-  private isColliding(rect1: any, rect2: any): boolean {
-    return (
-      rect1.x < rect2.x + rect2.width &&
-      rect1.x + rect1.width > rect2.x &&
-      rect1.y < rect2.y + rect2.height &&
-      rect1.y + rect1.height > rect2.y
-    );
+  private isColliding(obj1: any, obj2: any): boolean {
+    return obj1.x < obj2.x + obj2.width &&
+           obj1.x + obj1.width > obj2.x &&
+           obj1.y < obj2.y + obj2.height &&
+           obj1.y + obj1.height > obj2.y;
   }
 
   /**
-   * Comprueba el estado de victoria o derrota del juego.
+   * Comprueba el estado del juego (victoria, derrota, siguiente oleada).
    */
   private checkGameState(): void {
-    // Actualizar high score
-    if (this.score > this.highScore) {
-      this.highScore = this.score;
-    }
-    
-    // Victoria
-    if (this.aliens.length === 0) {
-      this.gameState = 'win';
-      this.playSound('win_game');
-      // Aumentar dificultad para la siguiente oleada
+    // Comprobar si todos los aliens están muertos
+    const aliveAliens = this.aliens.filter(alien => !alien.isDead);
+    if (aliveAliens.length === 0) {
       this.wave++;
-      if (this.alienRows < 5) this.alienRows++;
-      if (this.alienCols < 10) this.alienCols++;
-      this.alienHorizontalSpeed *= 1.2;
-    }
-
-    // Derrota por aliens llegando abajo
-    const canvasHeight = this.canvasRef.nativeElement.height;
-    if (this.aliens.some(alien => !alien.isDead && alien.y + alien.height > canvasHeight - this.player.height - 20)) {
-      this.gameState = 'gameOver';
-      this.playSound('game_over');
-      this.saveHighScore();
+      this.alienHorizontalSpeed += 0.5;
+      this.alienRows = Math.min(this.alienRows + 1, 6);
+      this.createAliens();
+      this.score += 50 * this.wave; // Bonus por completar oleada
+      this.playSound('win_game');
     }
     
-    // Derrota por quedarse sin vidas
+    // Comprobar si el jugador se queda sin vidas
     if (this.lives <= 0) {
       this.gameState = 'gameOver';
       this.playSound('game_over');
       this.saveHighScore();
     }
+    
+    // Comprobar si los aliens llegan al jugador
+    const playerReached = this.aliens.some(alien => 
+      !alien.isDead && alien.y + alien.height >= this.player.y
+    );
+    if (playerReached) {
+      this.lives = 0;
+      this.gameState = 'gameOver';
+      this.playSound('game_over');
+      this.saveHighScore();
+    }
   }
 
   /**
-   * Dibuja todos los elementos del juego.
+   * Dibuja el estado actual del juego.
    */
   private drawGame(): void {
-    // Fondo negro
-    this.ctx.fillStyle = '#000000';
-    this.ctx.fillRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
+    this.clearCanvas();
+    this.drawBackground();
+    this.drawAliens();
+    this.drawBullets();
+    this.drawAlienBullets();
+    this.drawPowerUps();
+    this.drawParticles();
+    this.drawPlayer();
+    this.drawUI();
     
-    // Dibujar estrellas de fondo
-    this.drawStars();
-    
-    // Dibujar la nave del jugador con efectos especiales
-    const playerColor = this.player.invulnerable && Math.floor(Date.now() / 100) % 2 ? '#888888' : '#00ff00';
-    this.drawPixelArt(this.player.x, this.player.y, playerColor, [
-        [0,0,1,0,0],
-        [0,1,1,1,0],
-        [1,1,1,1,1],
-        [1,0,1,0,1]
-    ], 6);
-    
-    // Dibujar escudo del jugador
-    if (this.player.hasShield) {
-      this.ctx.strokeStyle = '#00ffff';
-      this.ctx.lineWidth = 2;
-      this.ctx.beginPath();
-      this.ctx.arc(this.player.x + this.player.width/2, this.player.y + this.player.height/2, 25, 0, 2 * Math.PI);
-      this.ctx.stroke();
+    if (this.isMobile) {
+      this.drawTouchControls();
     }
+  }
 
-    // Dibujar balas del jugador
-    this.ctx.fillStyle = '#ffff00';
+  private clearCanvas(): void {
+    this.ctx.fillStyle = '#000011';
+    this.ctx.fillRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
+  }
+
+  private drawBackground(): void {
+    // Dibujar estrellas
+    this.ctx.fillStyle = 'white';
+    this.stars.forEach(star => {
+      this.ctx.globalAlpha = star.brightness;
+      this.ctx.fillRect(star.x, star.y, 1, 1);
+    });
+    this.ctx.globalAlpha = 1;
+  }
+
+  private drawPlayer(): void {
+    const flickering = this.player.invulnerable && Math.floor(Date.now() / 100) % 2;
+    
+    if (!flickering) {
+      // Dibujar escudo si está activo
+      if (this.player.hasShield) {
+        this.ctx.strokeStyle = '#00ffff';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(
+          this.player.x + this.player.width / 2,
+          this.player.y + this.player.height / 2,
+          this.player.width / 2 + 5,
+          0,
+          Math.PI * 2
+        );
+        this.ctx.stroke();
+      }
+      
+      // Dibujar nave del jugador
+      this.ctx.fillStyle = '#00ff00';
+      this.ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
+      
+      // Detalles de la nave
+      this.ctx.fillStyle = '#ffffff';
+      this.ctx.fillRect(this.player.x + this.player.width / 2 - 2, this.player.y, 4, 8);
+    }
+  }
+
+  private drawAliens(): void {
+    this.aliens.forEach(alien => {
+      if (!alien.isDead) {
+        // Color según el tipo de alien
+        switch (alien.type) {
+          case 'fast':
+            this.ctx.fillStyle = '#ff0000';
+            break;
+          case 'medium':
+            this.ctx.fillStyle = '#ffff00';
+            break;
+          default:
+            this.ctx.fillStyle = '#ff00ff';
+        }
+        
+        this.ctx.fillRect(alien.x, alien.y, alien.width, alien.height);
+        
+        // Detalles del alien
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(alien.x + 2, alien.y + 2, alien.width - 4, alien.height - 4);
+      }
+    });
+  }
+
+  private drawBullets(): void {
+    this.ctx.fillStyle = '#00ff00';
     this.bullets.forEach(bullet => {
       this.ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
     });
-    
-    // Dibujar balas de aliens
+  }
+
+  private drawAlienBullets(): void {
     this.ctx.fillStyle = '#ff0000';
     this.alienBullets.forEach(bullet => {
       this.ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
     });
+  }
 
-    // Dibujar aliens con diferentes colores según tipo
-    this.aliens.forEach(alien => {
-      if (!alien.isDead) {
-        let color = '#ff00ff';
-        if (alien.type === 'fast') color = '#ff4444';
-        else if (alien.type === 'medium') color = '#4444ff';
-        
-        this.drawPixelArt(alien.x, alien.y, color, [
-          [0,1,0,0,1,0],
-          [0,0,1,1,0,0],
-          [0,1,1,1,1,0],
-          [1,1,0,0,1,1],
-          [0,0,1,1,0,0]
-        ], 4);
-      }
-    });
-    
-    // Dibujar power-ups
+  private drawPowerUps(): void {
     this.powerUps.forEach(powerUp => {
-      let color = '#ffff00';
-      let symbol = [
-        [1,1,1],
-        [1,0,1],
-        [1,1,1]
-      ];
-      
+      // Color según el tipo de power-up
       switch (powerUp.type) {
         case 'rapidFire':
-          color = '#ff8800';
-          symbol = [
-            [1,0,1],
-            [0,1,0],
-            [1,0,1]
-          ];
+          this.ctx.fillStyle = '#ff8800';
           break;
         case 'shield':
-          color = '#00ffff';
-          symbol = [
-            [0,1,0],
-            [1,0,1],
-            [0,1,0]
-          ];
+          this.ctx.fillStyle = '#00ffff';
           break;
         case 'multiShot':
-          color = '#ff0088';
-          symbol = [
-            [1,0,1],
-            [1,1,1],
-            [1,0,1]
-          ];
+          this.ctx.fillStyle = '#8800ff';
           break;
         case 'scoreBonus':
-          color = '#88ff00';
+          this.ctx.fillStyle = '#ffff00';
           break;
       }
       
-      this.drawPixelArt(powerUp.x, powerUp.y, color, symbol, 7);
+      this.ctx.fillRect(powerUp.x, powerUp.y, powerUp.width, powerUp.height);
+      
+      // Indicador del tipo
+      this.ctx.fillStyle = '#ffffff';
+      this.ctx.font = '12px Arial';
+      this.ctx.textAlign = 'center';
+      let symbol = '';
+      switch (powerUp.type) {
+        case 'rapidFire': symbol = 'R'; break;
+        case 'shield': symbol = 'S'; break;
+        case 'multiShot': symbol = 'M'; break;
+        case 'scoreBonus': symbol = '$'; break;
+      }
+      this.ctx.fillText(symbol, powerUp.x + powerUp.width / 2, powerUp.y + powerUp.height / 2 + 4);
     });
-    
-    // Dibujar partículas
+  }
+
+  private drawParticles(): void {
     this.particles.forEach(particle => {
       const alpha = particle.life / particle.maxLife;
-      this.ctx.fillStyle = particle.color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
-      this.ctx.fillRect(particle.x - 1, particle.y - 1, 2, 2);
+      this.ctx.globalAlpha = alpha;
+      this.ctx.fillStyle = particle.color;
+      this.ctx.fillRect(particle.x, particle.y, 2, 2);
     });
-    
-    // UI del juego
-    this.drawGameUI();
+    this.ctx.globalAlpha = 1;
   }
-  
-  private drawStars(): void {
-    this.stars.forEach(star => {
-      const alpha = Math.floor(star.brightness * 255).toString(16).padStart(2, '0');
-      this.ctx.fillStyle = `#ffffff${alpha}`;
-      this.ctx.fillRect(star.x, star.y, 1, 1);
-    });
-  }
-  
-  private drawGameUI(): void {
+
+  private drawUI(): void {
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.font = '16px monospace';
+    this.ctx.font = this.isMobile ? '16px Arial' : '20px Arial';
     this.ctx.textAlign = 'left';
     
-    // Puntuación y estadísticas
-    this.ctx.fillText(`PUNTUACIÓN: ${this.score}`, 10, 25);
-    this.ctx.fillText(`RÉCORD: ${this.highScore}`, 10, 45);
-    this.ctx.fillText(`OLEADA: ${this.wave}`, 10, 65);
+    const margin = 10;
+    let y = 30;
     
-    // Vidas
-    this.ctx.fillText(`VIDAS: `, 10, 85);
-    for (let i = 0; i < this.lives; i++) {
-      this.drawPixelArt(70 + i * 25, 70, '#00ff00', [
-        [0,0,1,0,0],
-        [0,1,1,1,0],
-        [1,1,1,1,1]
-      ], 3);
-    }
+    this.ctx.fillText(`Score: ${this.score}`, margin, y);
+    y += this.isMobile ? 25 : 30;
     
-    // Indicadores de power-ups activos
-    let powerUpY = this.canvasRef.nativeElement.height - 80;
-    this.ctx.font = '12px monospace';
+    this.ctx.fillText(`Lives: ${this.lives}`, margin, y);
+    y += this.isMobile ? 25 : 30;
+    
+    this.ctx.fillText(`Wave: ${this.wave}`, margin, y);
+    y += this.isMobile ? 25 : 30;
+    
+    this.ctx.fillText(`High Score: ${this.highScore}`, margin, y);
+    
+    // Mostrar power-ups activos
+    const rightMargin = this.canvasRef.nativeElement.width - 150;
+    y = 30;
     
     if (this.player.rapidFire) {
       this.ctx.fillStyle = '#ff8800';
-      this.ctx.fillText('DISPARO RÁPIDO', 10, powerUpY);
-      powerUpY -= 20;
+      this.ctx.fillText('Rapid Fire', rightMargin, y);
+      y += 25;
     }
     
     if (this.player.multiShot) {
-      this.ctx.fillStyle = '#ff0088';
-      this.ctx.fillText('DISPARO MÚLTIPLE', 10, powerUpY);
-      powerUpY -= 20;
+      this.ctx.fillStyle = '#8800ff';
+      this.ctx.fillText('Multi Shot', rightMargin, y);
+      y += 25;
     }
     
     if (this.player.hasShield) {
       this.ctx.fillStyle = '#00ffff';
-      this.ctx.fillText('ESCUDO ACTIVO', 10, powerUpY);
-      powerUpY -= 20;
+      this.ctx.fillText('Shield', rightMargin, y);
+      y += 25;
+    }
+    
+    this.ctx.fillStyle = '#ffffff';
+  }
+
+  private drawTouchControls(): void {
+    this.touchButtons.forEach(button => {
+      // Fondo del botón
+      this.ctx.fillStyle = button.isPressed ? '#555555' : '#333333';
+      this.ctx.fillRect(button.x, button.y, button.width, button.height);
+      
+      // Borde del botón
+      this.ctx.strokeStyle = '#ffffff';
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeRect(button.x, button.y, button.width, button.height);
+      
+      // Texto del botón
+      this.ctx.fillStyle = '#ffffff';
+      this.ctx.font = '24px Arial';
+      this.ctx.textAlign = 'center';
+      this.ctx.fillText(
+        button.label,
+        button.x + button.width / 2,
+        button.y + button.height / 2 + 8
+      );
+    });
+  }
+
+  private drawIntroScreen(): void {
+    this.clearCanvas();
+    this.drawBackground();
+    
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.font = this.isMobile ? '28px Arial' : '36px Arial';
+    this.ctx.textAlign = 'center';
+    
+    const centerX = this.canvasRef.nativeElement.width / 2;
+    const centerY = this.canvasRef.nativeElement.height / 2;
+    
+    this.ctx.fillText('SPACE INVADERS', centerX, centerY - 100);
+    
+    this.ctx.font = this.isMobile ? '16px Arial' : '20px Arial';
+    this.ctx.fillText(`High Score: ${this.highScore}`, centerX, centerY - 50);
+    
+    // Instrucciones
+    this.ctx.font = this.isMobile ? '14px Arial' : '16px Arial';
+    
+    if (this.isMobile) {
+      this.ctx.fillText('Tap to start', centerX, centerY + 20);
+      this.ctx.fillText('Use touch controls to play', centerX, centerY + 50);
+    } else {
+      this.ctx.fillText('Press ENTER to start', centerX, centerY + 20);
+      this.ctx.fillText('Arrow keys or A/D to move', centerX, centerY + 50);
+      this.ctx.fillText('SPACE or W to shoot', centerX, centerY + 80);
+      this.ctx.fillText('P to pause', centerX, centerY + 110);
     }
   }
 
-  /**
-   * Dibuja un personaje de pixel art a partir de una matriz 2D.
-   */
-  private drawPixelArt(x: number, y: number, color: string, art: number[][], pixelSize: number): void {
-    this.ctx.fillStyle = color;
-    art.forEach((row, rowIndex) => {
-      row.forEach((pixel, colIndex) => {
-        if (pixel) {
-          this.ctx.fillRect(x + colIndex * pixelSize, y + rowIndex * pixelSize, pixelSize, pixelSize);
-        }
-      });
-    });
-  }
-  
-  // Métodos para dibujar las diferentes pantallas del juego
-  
-  private drawIntroScreen(): void {
-    this.ctx.fillStyle = '#000000';
-    this.ctx.fillRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
+  private drawGameOverScreen(): void {
+    this.clearCanvas();
+    this.drawBackground();
     
-    // Estrellas de fondo
-    this.drawStars();
-
-    this.ctx.fillStyle = '#ffffff';
-    this.ctx.font = '32px monospace';
+    this.ctx.fillStyle = '#ff0000';
+    this.ctx.font = this.isMobile ? '28px Arial' : '36px Arial';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText('INVASORES GALÁCTICOS', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 120);
-
-    // Mostrar récord
-    this.ctx.font = '18px monospace';
-    this.ctx.fillStyle = '#ffff00';
-    this.ctx.fillText(`RÉCORD: ${this.highScore}`, this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 90);
-
-    // Controles
-    this.ctx.font = '14px monospace';
-    this.ctx.fillStyle = '#ffffff';
-    this.ctx.fillText('CONTROLES:', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 50);
-    this.ctx.fillText('← → o A/D - Mover', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 30);
-    this.ctx.fillText('ESPACIO o W - Disparar', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 10);
-    this.ctx.fillText('P o ESC - Pausa', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 10);
     
-    // Power-ups info
-    this.ctx.fillStyle = '#00ffff';
-    this.ctx.fillText('POWER-UPS:', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 40);
-    this.ctx.font = '12px monospace';
-    this.ctx.fillStyle = '#ff8800';
-    this.ctx.fillText('🔥 Disparo Rápido', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 60);
-    this.ctx.fillStyle = '#00ffff';
-    this.ctx.fillText('🛡️ Escudo Protector', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 75);
-    this.ctx.fillStyle = '#ff0088';
-    this.ctx.fillText('⚡ Disparo Múltiple', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 90);
-    this.ctx.fillStyle = '#88ff00';
-    this.ctx.fillText('💰 Bonus de Puntos', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 105);
+    const centerX = this.canvasRef.nativeElement.width / 2;
+    const centerY = this.canvasRef.nativeElement.height / 2;
+    
+    this.ctx.fillText('GAME OVER', centerX, centerY - 100);
+    
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.font = this.isMobile ? '18px Arial' : '24px Arial';
+    this.ctx.fillText(`Final Score: ${this.score}`, centerX, centerY - 50);
+    this.ctx.fillText(`High Score: ${this.highScore}`, centerX, centerY - 20);
+    this.ctx.fillText(`Wave Reached: ${this.wave}`, centerX, centerY + 10);
+    
+    this.ctx.font = this.isMobile ? '14px Arial' : '16px Arial';
+    
+    if (this.isMobile) {
+      this.ctx.fillText('Tap to restart', centerX, centerY + 60);
+    } else {
+      this.ctx.fillText('Press ENTER to restart', centerX, centerY + 60);
+    }
+  }
+
+  private drawWinScreen(): void {
+    this.clearCanvas();
+    this.drawBackground();
     
     this.ctx.fillStyle = '#00ff00';
-    this.ctx.font = '20px monospace';
-    this.ctx.fillText('Pulsa ENTER para empezar', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 140);
+    this.ctx.font = this.isMobile ? '28px Arial' : '36px Arial';
+    this.ctx.textAlign = 'center';
+    
+    const centerX = this.canvasRef.nativeElement.width / 2;
+    const centerY = this.canvasRef.nativeElement.height / 2;
+    
+    this.ctx.fillText('WAVE COMPLETE!', centerX, centerY - 100);
+    
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.font = this.isMobile ? '18px Arial' : '24px Arial';
+    this.ctx.fillText(`Score: ${this.score}`, centerX, centerY - 50);
+    this.ctx.fillText(`Wave: ${this.wave}`, centerX, centerY - 20);
+    
+    this.ctx.font = this.isMobile ? '14px Arial' : '16px Arial';
+    
+    if (this.isMobile) {
+      this.ctx.fillText('Tap for next wave', centerX, centerY + 40);
+    } else {
+      this.ctx.fillText('Press ENTER for next wave', centerX, centerY + 40);
+    }
   }
-  
+
   private drawPauseScreen(): void {
-    // Overlay semi-transparente
+    // Dibujar overlay semi-transparente
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     this.ctx.fillRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
     
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.font = '48px monospace';
+    this.ctx.font = this.isMobile ? '24px Arial' : '32px Arial';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText('PAUSA', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 20);
     
-    this.ctx.font = '18px monospace';
-    this.ctx.fillText('Pulsa P o ESC para continuar', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 30);
-  }
-  
-  private drawWinScreen(): void {
-    this.ctx.fillStyle = '#000000';
-    this.ctx.fillRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
+    const centerX = this.canvasRef.nativeElement.width / 2;
+    const centerY = this.canvasRef.nativeElement.height / 2;
     
-    // Estrellas de fondo
-    this.drawStars();
+    this.ctx.fillText('PAUSED', centerX, centerY - 20);
     
-    // Efecto de victoria con partículas
-    this.createParticles(this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 50, '#ffff00', 3);
+    this.ctx.font = this.isMobile ? '14px Arial' : '16px Arial';
     
-    this.ctx.fillStyle = '#ffff00';
-    this.ctx.font = '42px monospace';
-    this.ctx.textAlign = 'center';
-    this.ctx.fillText('¡VICTORIA!', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 60);
-    
-    this.ctx.font = '24px monospace';
-    this.ctx.fillStyle = '#ffffff';
-    this.ctx.fillText(`Puntuación: ${this.score}`, this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 20);
-    
-    if (this.score >= this.highScore) {
-      this.ctx.fillStyle = '#ff0088';
-      this.ctx.font = '20px monospace';
-      this.ctx.fillText('¡NUEVO RÉCORD!', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 5);
+    if (this.isMobile) {
+      this.ctx.fillText('Tap pause button to continue', centerX, centerY + 20);
+    } else {
+      this.ctx.fillText('Press P or ESC to continue', centerX, centerY + 20);
     }
-    
-    this.ctx.font = '18px monospace';
-    this.ctx.fillStyle = '#00ffff';
-    this.ctx.fillText(`Oleada ${this.wave - 1} completada`, this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 35);
-    
-    this.ctx.font = '16px monospace';
-    this.ctx.fillStyle = '#00ff00';
-    this.ctx.fillText(`Pulsa ENTER para la oleada ${this.wave}`, this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 80);
-  }
-
-  private drawGameOverScreen(): void {
-    this.ctx.fillStyle = '#000000';
-    this.ctx.fillRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
-    
-    // Estrellas de fondo
-    this.drawStars();
-    
-    this.ctx.fillStyle = '#ff0000';
-    this.ctx.font = '36px monospace';
-    this.ctx.textAlign = 'center';
-    this.ctx.fillText('GAME OVER', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 60);
-    
-    this.ctx.font = '20px monospace';
-    this.ctx.fillStyle = '#ffffff';
-    this.ctx.fillText(`Puntuación Final: ${this.score}`, this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 - 20);
-    this.ctx.fillText(`Récord: ${this.highScore}`, this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 5);
-    this.ctx.fillText(`Oleadas Completadas: ${this.wave - 1}`, this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 30);
-    
-    if (this.score >= this.highScore) {
-      this.ctx.fillStyle = '#ffff00';
-      this.ctx.font = '18px monospace';
-      this.ctx.fillText('¡NUEVO RÉCORD!', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 55);
-    }
-
-    this.ctx.font = '16px monospace';
-    this.ctx.fillStyle = '#00ff00';
-    this.ctx.fillText('Pulsa ENTER para jugar de nuevo', this.canvasRef.nativeElement.width / 2, this.canvasRef.nativeElement.height / 2 + 90);
-  }
-
-  /**
-   * Establece el tamaño del canvas para que coincida con su contenedor.
-   */
-  private setCanvasSize(): void {
-    const canvas = this.canvasRef.nativeElement;
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    
-    // Reinicializar estrellas cuando cambia el tamaño
-    this.initStars();
   }
 }

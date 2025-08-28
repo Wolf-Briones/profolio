@@ -1,4 +1,5 @@
 <!-- alien-invaders-game.component.html -->
 <div class="arcade-screen-container">
-    <canvas #gameCanvas class="arcade-canvas"></canvas>
+    <canvas #gameCanvas class="arcade-canvas"
+    [class.mobile]="isMobile"></canvas>
 </div>

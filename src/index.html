@@ -63,7 +63,7 @@
   <!-- Microsoft Tiles -->
   <meta name="msapplication-TileColor" content="#2d3748">
   <meta name="msapplication-TileImage" content="assets/icons/mstile-144x144.png">
-  <meta name="msapplication-config" content="assets/icons/browserconfig.xml">
+  <meta name="msapplication-config" content="assets/iconsconfig.xml">
   
   <!-- Theme colors -->
   <meta name="theme-color" content="#2d3748">
@@ -216,10 +216,10 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/ngsw-worker.js')
         .then(function(registration) {
-          console.log('SW registrado con éxito:', registration);
+          console.log('SW registrado con éxito:');
         })
         .catch(function(error) {
-          console.log('Error al registrar SW:', error);
+          console.log('Error al registrar SW:');
         });
     }
   </script>

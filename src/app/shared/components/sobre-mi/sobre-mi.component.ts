@@ -4,12 +4,11 @@ import { LanguageService } from '../../service/language-service';
 import { CONFIG_ABOUT_ME, Languages, PROFILE_CONSTANTS, Skills, TECH_STACK } from '../../service/data-profile-language';
 import { TypewriterDirective } from '../../directives/type-writer-directive';
 import { CommonModule } from '@angular/common';  
-import { ArcadeGameScreenComponent } from '../../games-comp/arcade-game-screen/arcade-game-screen.component';
-import { NavigationButtonsComponent } from '../../../core/components/navigation-buttons/navigation-buttons.component';
+import { ArcadeGameScreenComponent } from '../../games-comp/arcade-game-screen/arcade-game-screen.component'; 
 
 @Component({
   selector: 'app-sobre-mi',
-  imports: [ CommonModule, TypewriterDirective, ArcadeGameScreenComponent, NavigationButtonsComponent],
+  imports: [ CommonModule, TypewriterDirective, ArcadeGameScreenComponent],
   templateUrl: './sobre-mi.component.html',
   styleUrl: './sobre-mi.component.scss'
 })
